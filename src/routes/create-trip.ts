@@ -68,26 +68,27 @@ export async function createTrip(app: FastifyInstance) {
       },
       subject: `Confirm your trip to ${destination} on ${formattedStartDate}`,
       html: `
-      <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
-        <p>
-          A new trip has been scheduled for <strong>${destination}</strong> from 
-          <strong>${formattedStartDate}</strong> 
-          to <strong>${formattedEndDate}</strong>.
-        </p>
-      
-        <p>Confirm this trip by the link below:</p>
-        <a href="${confirmationLink}">Confirm trip</a>
-      
-        <p>If you don't recognize this email, just ignore it.</p>
-      
-        <em>Best regards,</em><br/>
-        <strong>Travel Planner team.</strong>    
-      </div>
+        <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
+          <p>Hello, ${owner_name}!</p>
+          <p>
+            A new trip has been scheduled to <strong>${destination}</strong> from 
+            <strong>${formattedStartDate}</strong> 
+            to <strong>${formattedEndDate}</strong>.
+          </p>
+        
+          <p>Confirm this trip by the clicking the link below:</p>
+          <a href="${confirmationLink}">Confirm trip</a>
+        
+          <p>If you didn't request this email, please ignore it.</p>
+        
+          <em>Best regards,</em><br/>
+          <strong>Travel Planner team.</strong>    
+        </div>
       `.trim()
-    })
+    });
 
-    console.log(nodemailer.getTestMessageUrl(message))
+    console.log(nodemailer.getTestMessageUrl(message));
 
-    return { tripId: trip.id }
+    return { tripId: trip.id };
   })
 }

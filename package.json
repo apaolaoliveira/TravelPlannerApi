@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "npx tsx watch src/server.ts"
+    "server": "npx tsx watch src/server.ts",
+    "migrate": "npx prisma migrate dev",
+    "db": "npx prisma studio"
   },
   "keywords": [],
   "author": "",
