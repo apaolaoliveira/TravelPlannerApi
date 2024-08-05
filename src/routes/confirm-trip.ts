@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { getEmailClient } from '../lib/mail';
 import nodemailer from 'nodemailer';
 import { ClientError } from '../errors/client-error';
+import { env } from '../env';
 
 export async function confirmTrip(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/confirm', {
@@ -27,7 +28,7 @@ export async function confirmTrip(app: FastifyInstance) {
     });
 
     if(!trip) throw new ClientError('Trip not found');
-    if(trip.is_confirmed) return reply.redirect(`https://localhost:3000/trips/${trip.id}`);
+    if(trip.is_confirmed) return reply.redirect(`${env.WEB_BASE_URL}/trips/${trip.id}`);
 
     await prisma.trip.update({
       where: { id: tripId },
@@ -41,7 +42,7 @@ export async function confirmTrip(app: FastifyInstance) {
 
     await Promise.all(
       trip.participants.map(async (participant) => {
-        const confirmationLink = `http://localhost:3000/participants/${participant.id}/confirm`;
+        const confirmationLink = `${env.API_BASE_URL}/participants/${participant.id}/confirm`;
         const message = await mail.sendMail({
           from: {
             name: 'Travel Planner team',
@@ -73,6 +74,6 @@ export async function confirmTrip(app: FastifyInstance) {
       })
     );
 
-    return reply.redirect(`https://localhost:3000/trips/${trip.id}`);
+    return reply.redirect(`${env.WEB_BASE_URL}/trips/${trip.id}`);
   })
 }
