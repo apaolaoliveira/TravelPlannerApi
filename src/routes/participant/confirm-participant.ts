@@ -1,9 +1,9 @@
+import { env } from './../../env';
+import { ClientError } from './../../errors/client-error';
+import { prisma } from './../../lib/prisma';
 import { z } from 'zod';
 import { FastifyInstance } from "fastify"
 import { ZodTypeProvider } from 'fastify-type-provider-zod'; 
-import { prisma } from '../lib/prisma';
-import { ClientError } from '../errors/client-error';
-import { env } from '../env';
 
 export async function confirmParticipant(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().get('/participants/:participantId/confirm', {
