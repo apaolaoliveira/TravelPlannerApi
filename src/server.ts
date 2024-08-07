@@ -2,19 +2,20 @@ import fastify from 'fastify';
 import cors from '@fastify/cors';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
 
-import { createTrip } from './routes/create-trip';
-import { confirmTrip } from './routes/confirm-trip';
-import { confirmParticipant } from './routes/confirm-participant';
-import { createActivity } from './routes/create-activity';
-import { getActivities } from './routes/get-activities';
-import { createLink } from './routes/create-link';
-import { getLinks } from './routes/get-links';
-import { getParticipants } from './routes/get-participants';
-import { updateTrip } from './routes/update-trip';
-import { getTripDetails } from './routes/get-trip-details';
-import { getParticipant } from './routes/get-participant';
+import { createTrip } from './routes/trip/create-trip';
+import { confirmTrip } from './routes/trip/confirm-trip';
+import { confirmParticipant } from './routes/participant/confirm-participant';
+import { createActivity } from './routes/activity/create-activity';
+import { getActivities } from './routes/activity/get-activities';
+import { createLink } from './routes/link/create-link';
+import { getLinks } from './routes/link/get-links';
+import { getParticipants } from './routes/participant/get-participants';
+import { updateTrip } from './routes/trip/update-trip';
+import { getTripDetails } from './routes/trip/get-trip-details';
+import { getParticipant } from './routes/participant/get-participant';
 import { errorHandler } from './error-handler';
 import { env } from './env';
+import { createInvite } from './routes/trip/create-invite';
 
 const app = fastify();
 
@@ -31,6 +32,7 @@ app.register(createTrip);
 app.register(confirmTrip);
 app.register(updateTrip);
 app.register(getTripDetails);
+app.register(createInvite);
 
 app.register(confirmParticipant);
 app.register(getParticipants);
