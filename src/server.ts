@@ -10,6 +10,7 @@ import { tripRoutes } from './routes/trip';
 
 const app = fastify();
 const port = Number(process.env.PORT) || 4000;
+const host = "0.0.0.0";
 
 app.register(cors, {
   origin: '*', // add frontend url here
@@ -24,6 +25,6 @@ app.register(linksRoutes);
 app.register(participantsRoutes);
 app.register(tripRoutes);
 
-app.listen({port: port}, () => {
+app.listen({port: port, host: host}, () => {
   console.log(`Server is running on port ${port}`);
 });
