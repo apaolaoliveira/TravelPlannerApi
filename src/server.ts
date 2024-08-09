@@ -16,6 +16,7 @@ import { getParticipant } from './routes/participant/get-participant';
 import { errorHandler } from './error-handler';
 import { env } from './env';
 import { createInvite } from './routes/trip/create-invite';
+import { deleteActivity } from './routes/activity/delete-activity';
 
 const app = fastify();
 
@@ -40,6 +41,7 @@ app.register(getParticipant);
 
 app.register(createActivity);
 app.register(getActivities);
+app.register(deleteActivity);
 
 app.register(createLink);
 app.register(getLinks);
