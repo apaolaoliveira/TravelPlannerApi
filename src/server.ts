@@ -9,7 +9,7 @@ import { participantsRoutes } from './routes/participant';
 import { tripRoutes } from './routes/trip';
 
 const app = fastify();
-const port = process.env.PORT || 4000;
+const port = Number(process.env.PORT) || 4000;
 
 app.register(cors, {
   origin: '*', // add frontend url here
@@ -24,6 +24,6 @@ app.register(linksRoutes);
 app.register(participantsRoutes);
 app.register(tripRoutes);
 
-app.listen(port, () => {
+app.listen({port: port}, () => {
   console.log(`Server is running on port ${port}`);
 });
