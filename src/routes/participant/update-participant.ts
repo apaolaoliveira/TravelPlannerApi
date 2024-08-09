@@ -2,25 +2,26 @@ import { z } from 'zod';
 import { prisma } from '../../lib/prisma';
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from 'fastify-type-provider-zod'; 
+import { ClientError } from '../../errors/client-error';
 import dayjs from 'dayjs';
 import { getEmailClient } from '../../lib/mail';
-import nodemailer from 'nodemailer';
-import { ClientError } from '../../errors/client-error';
 import { env } from '../../env';
+import nodemailer from 'nodemailer';
 
-export async function createInvite(app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().post('/trips/:tripId/invite', {
+export async function updateParticipant(app: FastifyInstance) {
+  app.withTypeProvider<ZodTypeProvider>().put('/trips/:tripId/participant/:participantId', {
     schema: {
       params: z.object({
         tripId: z.string().uuid(),
+        participantId: z.string().uuid(),
       }),
       body: z.object({
-        name: z.string(),
+        name: z.string().min(4),
         email: z.string().email(),
       })
     }
   }, async (request) => {
-    const { tripId } = request.params;
+    const { tripId, participantId } = request.params;
     const { name, email } = request.body;
 
     const trip = await prisma.trip.findUnique({
@@ -29,11 +30,10 @@ export async function createInvite(app: FastifyInstance) {
 
     if (!trip) throw new ClientError('Trip not found');
 
-    const participant = await prisma.participant.create({
+    const participant = await prisma.participant.update({
+      where: { id: participantId, trip_id: tripId },
       data: {
-        name,
-        email,
-        trip_id: tripId,
+        name, email
       }
     });
 

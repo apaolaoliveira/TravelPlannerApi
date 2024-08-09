@@ -5,7 +5,7 @@ import { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { ClientError } from '../../errors/client-error';
 
 export async function getParticipant(app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().get('/trips/participants/:participantId', {
+  app.withTypeProvider<ZodTypeProvider>().get('/trips/participant/:participantId', {
     schema: {
       params: z.object({
         participantId: z.string().uuid(),
