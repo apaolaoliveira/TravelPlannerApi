@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "18"
+  },
   "scripts": {
     "server": "npx tsx watch src/server.ts",
     "migrate": "npx prisma migrate dev",
-    "db": "npx prisma studio"
+    "db": "npx prisma studio",
+    "build": "tsup src",
+    "start":  "node dist/server.js"
   },
   "keywords": [],
   "author": "",
