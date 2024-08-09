@@ -11,7 +11,7 @@
     "migrate": "npx prisma migrate dev",
     "db": "npx prisma studio",
     "build": "tsup src",
-    "start":  "node dist/server.js"
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
     "@types/node": "^22.1.0",
     "@types/nodemailer": "^6.4.15",
     "prisma": "^5.17.0",
+    "tsup": "^8.2.4",
     "tsx": "^4.16.5",
     "typescript": "^5.5.4"
   },
