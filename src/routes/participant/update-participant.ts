@@ -4,9 +4,8 @@ import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from 'fastify-type-provider-zod'; 
 import { ClientError } from '../../errors/client-error';
 import dayjs from 'dayjs';
-import { getEmailClient } from '../../lib/mail';
 import { env } from '../../env';
-import nodemailer from 'nodemailer';
+import { sendGuestInviteEmail } from '../../lib/mail-service';
 
 export async function updateParticipant(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().put('/trips/:tripId/participant/:participantId', {
@@ -37,40 +36,31 @@ export async function updateParticipant(app: FastifyInstance) {
       }
     });
 
+    const owner = await prisma.participant.findFirst({
+      where: {
+        trip_id: tripId,
+        is_owner: true,
+      },
+    })
+
     const formattedStartDate = dayjs(trip.starts_at).format('MM/DD/YYYY');
     const formattedEndDate = dayjs(trip.ends_at).format('MM/DD/YYYY');
 
-    const mail = await getEmailClient();
     const confirmationLink = `${env.API_BASE_URL}/participants/${participant.id}/confirm`;
-    
-    const message = await mail.sendMail({
-      from: {
-        name: 'Travel Planner team',
-        address: 'traver.planner@team.com'
-      },
-      to: participant.email,
-      subject: `Confirm your participation on the trip to ${trip.destination} on ${formattedStartDate}`,
-      html: `
-        <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
-          <p>Hello! Hope this email finds you well.</p>
-          <p>
-            You were invited to join a trip to <strong>${trip.destination}</strong>, which
-            will take place from <strong>${formattedStartDate}</strong>
-            and ends on <strong>${formattedEndDate}</strong>.
-          </p>
-        
-          <p>Please confirm this participation by clicking the link below:</p>
-          <a href="${confirmationLink}">Confirm trip</a>
-        
-          <p>If you don't recognize this email or are unable to attend, please ignore this message.</p>
-        
-          <em>Best regards,</em><br/>
-          <strong>Travel Planner team.</strong>    
-        </div>
-      `.trim(),
-    });
-    
-    console.log(nodemailer.getTestMessageUrl(message));
+
+    try {
+      await sendGuestInviteEmail({
+        name: participant.name || 'Guest',
+        email: participant.email,
+        destination: trip.destination,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+        confirmationLink,
+        ownerName: owner?.name || 'Trip Owner',
+      });
+    } catch (error) {
+      console.error(`Failed to send invitation email to ${participant.email}`, error);
+    }
     
     return { participantId: participant.id };
   })

@@ -1,17 +1,4 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend'
+import { env } from '../env'
 
-export async function getEmailClient(){
-  const account = await nodemailer.createTestAccount();
-
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-      user: account.user,
-      pass: account.pass
-    }
-  });
-
-  return transporter;
-}
+export const resend = new Resend(env.RESEND_API_KEY)
